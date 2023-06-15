@@ -5,10 +5,14 @@ class RoundButton extends StatelessWidget {
       {super.key,
       required this.title,
       required this.onTap,
-      this.loading = false});
+      this.loading = false,
+      this.color = Colors.deepPurple,
+      this.borderRadius = 10.0});
   final String title;
   final VoidCallback onTap;
   final bool loading;
+  final Color color;
+  final double borderRadius;
   @override
   Widget build(BuildContext context) {
     return InkWell(
