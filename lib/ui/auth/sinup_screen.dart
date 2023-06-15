@@ -2,7 +2,6 @@ import 'package:firebase/ui/auth/login_screen.dart';
 import 'package:firebase/utils/utils.dart';
 import 'package:firebase/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class SingUpScreen extends StatefulWidget {
@@ -16,7 +15,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
   final _globalKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool loading = false;
   @override
   void dispose() {
@@ -25,7 +24,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
     passwordController.dispose();
   }
 
-  void login() {
+  void singUp() {
     if (_globalKey.currentState!.validate()) {
       setState(() {
         loading = true;
@@ -106,7 +105,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
               title: 'Sing Up',
               loading: loading,
               onTap: () {
-                login();
+                singUp();
               },
             ),
             const SizedBox(

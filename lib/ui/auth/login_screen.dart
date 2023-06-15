@@ -1,5 +1,8 @@
 import 'package:firebase/ui/auth/sinup_screen.dart';
+import 'package:firebase/ui/posts/post_screen.dart';
+import 'package:firebase/utils/utils.dart';
 import 'package:firebase/widgets/round_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,6 +17,35 @@ class _LoginScreenState extends State<LoginScreen> {
   final _globalKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+  bool loading = false;
+  void login() {
+    setState(() {
+      loading = true;
+    });
+    _auth
+        .signInWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text.toString())
+        .then((value) {
+      setState(() {
+        loading = false;
+      });
+      Utils().tostMessage(message: value.user!.email.toString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PostScreen(),
+        ),
+      );
+    }).onError((error, stackTrace) {
+      Utils().tostMessage(message: error.toString());
+      setState(() {
+        loading = false;
+      });
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -83,8 +115,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               RoundButton(
                 title: 'Login',
+                loading: loading,
                 onTap: () {
-                  if (_globalKey.currentState!.validate()) {}
+                  if (_globalKey.currentState!.validate()) {
+                    login();
+                  }
                 },
               ),
               const SizedBox(
