@@ -2,6 +2,8 @@ import 'package:firebase/ui/auth/login_screen.dart';
 import 'package:firebase/ui/posts/add_post.dart';
 import 'package:firebase/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class PostScreen extends StatefulWidget {
@@ -12,6 +14,7 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  final ref = FirebaseDatabase.instance.ref('post');
   final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
@@ -49,6 +52,26 @@ class _PostScreenState extends State<PostScreen> {
           );
         },
         child: const Icon(Icons.add),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FirebaseAnimatedList(
+              query: ref,
+              defaultChild: Text('Loading'),
+              itemBuilder: (context, snapshot, animation, index) {
+                return ListTile(
+                  title: Text(
+                    snapshot.child('title').value.toString(),
+                  ),
+                  subtitle: Text(
+                    snapshot.child('id').value.toString(),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }
