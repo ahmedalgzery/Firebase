@@ -16,6 +16,13 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   final ref = FirebaseDatabase.instance.ref('post');
   final auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.onValue.listen((event) {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,9 +63,31 @@ class _PostScreenState extends State<PostScreen> {
       body: Column(
         children: [
           Expanded(
+            child: StreamBuilder(
+                stream: ref.onValue,
+                builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    Map<dynamic, dynamic> map =
+                        snapshot.data!.snapshot.value as dynamic;
+                    List<dynamic> list = [];
+                    list.clear();
+                    list = map.values.toList();
+                    return ListView.builder(
+                        itemCount: snapshot.data!.snapshot.children.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(list[index]['title']),
+                          );
+                        });
+                  }
+                }),
+          ),
+          Expanded(
             child: FirebaseAnimatedList(
               query: ref,
-              defaultChild: Text('Loading'),
+              defaultChild: const Text('Loading'),
               itemBuilder: (context, snapshot, animation, index) {
                 return ListTile(
                   title: Text(
