@@ -5,6 +5,8 @@ import 'package:firebase/ui/posts/post_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../ui/firestore/firestore_list_screen.dart';
+
 class SplashServices {
   void isLogin(BuildContext context) {
     final auth = FirebaseAuth.instance;
@@ -16,7 +18,7 @@ class SplashServices {
           () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const PostScreen(),
+                  builder: (context) => const FirestoreScreen(),
                 ),
               ));
     } else {
