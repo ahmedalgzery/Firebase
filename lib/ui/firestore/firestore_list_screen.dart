@@ -17,7 +17,7 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
   final searchFilterController = TextEditingController();
   final editeController = TextEditingController();
   final fireStore = FirebaseFirestore.instance.collection('users').snapshots();
-
+  CollectionReference ref = FirebaseFirestore.instance.collection('users');
   @override
   void initState() {
     super.initState();
@@ -87,8 +87,29 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       return ListTile(
+                        onTap: () {
+                          ref
+                              .doc(snapshot.data!.docs[index]['id'].toString())
+                              .update({'title': 'A New Update'}).then((value) {
+                            Utils().tostMessage(message: 'Updated');
+                          }).onError((error, stackTrace) {
+                            Utils().tostMessage(message: error.toString());
+                          });
+                        },
                         title: Text(
                             snapshot.data!.docs[index]['title'].toString()),
+                        subtitle: Text(
+                          snapshot.data!.docs[index]['id'].toString(),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {
+                            ref
+                                .doc(
+                                    snapshot.data!.docs[index]['id'].toString())
+                                .delete();
+                          },
+                          icon: const Icon(Icons.delete),
+                        ),
                       );
                     },
                   ),
