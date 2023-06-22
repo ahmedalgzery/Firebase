@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase/ui/auth/login_screen.dart';
 import 'package:firebase/ui/firestore/add_firestore_data.dart';
-import 'package:firebase/ui/posts/add_post.dart';
 import 'package:firebase/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +16,8 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
   final auth = FirebaseAuth.instance;
   final searchFilterController = TextEditingController();
   final editeController = TextEditingController();
+  final fireStore = FirebaseFirestore.instance.collection('users').snapshots();
+
   @override
   void initState() {
     super.initState();
@@ -64,15 +66,34 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
           const SizedBox(
             height: 10,
           ),
-          Expanded(
-              child: ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('data'),
-              );
-            },
-          )),
+          StreamBuilder<QuerySnapshot>(
+              stream: fireStore,
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return const Text(
+                    'Some Eroor',
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(
+                            snapshot.data!.docs[index]['title'].toString()),
+                      );
+                    },
+                  ),
+                );
+              }),
         ],
       ),
     );
@@ -85,11 +106,9 @@ class _FirestoreScreenState extends State<FirestoreScreen> {
         builder: (context) {
           return AlertDialog(
             title: const Text('Update'),
-            content: Container(
-              child: TextFormField(
-                controller: editeController,
-                decoration: const InputDecoration(hintText: 'Edit'),
-              ),
+            content: TextFormField(
+              controller: editeController,
+              decoration: const InputDecoration(hintText: 'Edit'),
             ),
             actions: [
               TextButton(
