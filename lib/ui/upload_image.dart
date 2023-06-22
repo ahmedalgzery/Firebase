@@ -31,7 +31,6 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image picked');
       }
     });
   }
@@ -40,7 +39,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Image'),
+        title: const Text('Upload Image'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -63,11 +62,11 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
                         )),
                     child: _image != null
                         ? Image.file(_image!.absolute)
-                        : Icon(Icons.image),
+                        : const Icon(Icons.image),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 39,
               ),
               RoundButton(

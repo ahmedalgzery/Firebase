@@ -157,11 +157,9 @@ class _PostScreenState extends State<PostScreen> {
         builder: (context) {
           return AlertDialog(
             title: const Text('Update'),
-            content: Container(
-              child: TextFormField(
-                controller: editeController,
-                decoration: const InputDecoration(hintText: 'Edit'),
-              ),
+            content: TextFormField(
+              controller: editeController,
+              decoration: const InputDecoration(hintText: 'Edit'),
             ),
             actions: [
               TextButton(
